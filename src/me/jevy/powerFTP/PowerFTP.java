@@ -23,7 +23,7 @@ public class PowerFTP {
 	File file = null;
 	int num = 0;
 	
-	
+	//Test did
 
 	List<Server> servers = null;
 
