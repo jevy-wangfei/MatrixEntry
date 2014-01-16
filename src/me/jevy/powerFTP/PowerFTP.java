@@ -22,6 +22,8 @@ import javax.xml.parsers.*;
 public class PowerFTP {
 	File file = null;
 	int num = 0;
+	
+	
 
 	List<Server> servers = null;
 
