@@ -1,5 +1,7 @@
 package me.jevy.powerFTP;
 
+import java.io.File;
+
 public class Server {
 	String ip = null;
 
@@ -9,15 +11,33 @@ public class Server {
 
 	String remoteDir = null;
 
-	String localDir = null;
+	String localDir = new File("").getAbsolutePath();
 
 	String file = null;
+	
+	String coding = "ascii";
 
-	String transfer = "ascii";
-
-	String mode = "get";
+	String direction = "get";
 
 	String port = "21";
+
+	public String getCoding() {
+		return coding;
+	}
+
+	public void setCoding(String coding) {
+		this.coding = coding;
+	}
+
+	public String getDirection() {
+		return direction;
+	}
+
+	public void setDirection(String direction) {
+		this.direction = direction;
+	}
+
+
 
 	public String getFile() {
 		return file;
@@ -43,13 +63,7 @@ public class Server {
 		this.localDir = localDir;
 	}
 
-	public String getMode() {
-		return mode;
-	}
 
-	public void setMode(String mode) {
-		this.mode = mode;
-	}
 
 	public String getPass() {
 		return pass;
@@ -75,14 +89,6 @@ public class Server {
 		this.remoteDir = remoteDir;
 	}
 
-	public String getTransfer() {
-		return transfer;
-	}
-
-	public void setTransfer(String transfer) {
-		this.transfer = transfer;
-	}
-
 	public String getUser() {
 		return user;
 	}
@@ -91,6 +97,9 @@ public class Server {
 		this.user = user;
 	}
 
+	public static void main(String[] args){
+		System.out.println(new Server().getLocalDir());
+	}
 	
 
 }

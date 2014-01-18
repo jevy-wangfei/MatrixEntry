@@ -7,10 +7,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.*;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.net.ftp.FTPClient;
-
+import org.apache.commons.net.ftp.FTPReply;
 import org.xml.sax.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -20,14 +23,20 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.*;
 
 public class PowerFTP {
-	File file = null;
-	int num = 0;
+	String configFile = (new File("").getAbsolutePath())+"Servers.xml";
+	private Log log = LogFactory.getLog(PowerFTP.class);
+	private int num = 0;
+	private List serverList = null;
 	
-	//Test did
-
-	List<Server> servers = null;
-
-	Date date = new Date();
+	
+	public PowerFTP(){
+		
+		
+	}
+	public PowerFTP(List servers){
+		
+	}
+	private Date date = new Date();
 
 	String ran = "" + date.getYear() + date.getMonth() + date.getDay()
 			+ date.getHours() + date.getMinutes() + date.getSeconds();
@@ -43,8 +52,7 @@ public class PowerFTP {
 		String second = c.next();
 		PowerFTP jftp = new PowerFTP();
 		if ("-f".equals(first)) {
-			String file = second;
-			jftp.jConfigFile(file);
+			jftp.configFile = second;
 		} else if ("-c".equals(first)) {
 			String[] parms = second.split(":");
 			String serverIP = parms[0];
@@ -91,7 +99,7 @@ public class PowerFTP {
 
 	}
 
-	void jConfigFile(String file) {
+	/*private void ConfigFile(String file) {
 		System.out.println("Total Files:" + this.servers.size());
 		for (int i = 0; i < this.servers.size(); i++) {
 			if ("get".equals(this.servers.get(i).getMode())) {
@@ -112,34 +120,17 @@ public class PowerFTP {
 				+ this.servers.size());
 		System.out.println("BYE");
 	}
+*/
 
-	public void jFileGet(String serverIP, String user, String passwd,
-			 String dir, String file,  String mode) {
-
-	}
-	
-	public void jFilePut(String serverIP, String user, String passwd,
-			 String dir, String file, String mode) {
-
-	}
-
-	void jDirGet(String serverIP, String user, String passwd,
-			 String dir) {
-
-	}
-
-	void jDirPut(String serverIP, String user, String passwd,
-			 String dir) {
-
-	}
 
 	void jGet(Server ser) {
 		FTPClient cli = this.conn(ser.getIp(),ser.getUser(),ser.getPass());
 		try {
 			if (ser.getRemoteDir().length() != 0) {
-				cli.cd(ser.getRemoteDir());
+				cli.changeWorkingDirectory(ser.getRemoteDir());
+				
 			}
-			TelnetInputStream is = cli.get(ser.getFile());
+			InputStream is = cli.retrieveFileStream(ser.getFile());
 
 			File file_out = new File(ser.getLocalDir());
 			// System.out.println(file_out.getPath()+file_out.getName());
@@ -162,7 +153,7 @@ public class PowerFTP {
 			}
 			is.close();
 			os.close();
-			cli.closeServer();
+			cli.disconnect();
 		} catch (IOException ex) {
 			System.out.println("Get File Error:");
 			ex.printStackTrace();
@@ -170,18 +161,18 @@ public class PowerFTP {
 		}
 	}
 
-	void jPut(Server ser) {
-		FtpClient cli = this.conn(ser.getIp(),ser.getUser(),ser.getPass());
+	void jPut(Server ser, String file) {
+		FTPClient cli = this.conn(ser.getIp(),ser.getUser(),ser.getPass());
 		try {
 			if (ser.getRemoteDir().length() != 0) {
-				cli.cd(ser.getRemoteDir());
+				cli.changeWorkingDirectory(ser.getRemoteDir());
 			}
 			List filesList = new ArrayList();
-			DataInputStream dis = new DataInputStream(cli.nameList("./"));
+			//DataInputStream dis = new DataInputStream(cli.nameList("./"));
 			String filename = "";
-			while ((filename = dis.readLine()) != null) {
-				filesList.add(filename);
-			}
+			//while ((filename = dis.readLine()) != null) {
+			//	filesList.add(filename);
+			//}
 			for (int n = 0; n < filesList.size(); n++) {
 				if (ser.getFile().toString()
 						.equals(filesList.get(n).toString())) {
@@ -190,18 +181,18 @@ public class PowerFTP {
 				}
 			}
 
-			TelnetOutputStream os = cli.put(ser.getFile());
+			//OutputStream os = cli.remoteStore(ser.getFile());
 			File file_in = new File(ser.getLocalDir() + ser.getFile());
 			FileInputStream is = new FileInputStream(file_in);
 			byte[] bytes = new byte[1024];
 			int c;
 			while ((c = is.read(bytes)) != -1) {
-				os.write(bytes, 0, c);
+				//os.write(bytes, 0, c);
 			}
 			is.close();
-			os.close();
+			//os.close();
 
-			cli.closeServer();
+			cli.disconnect();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -212,17 +203,40 @@ public class PowerFTP {
 
 	FTPClient conn(String serverIP, String user, String passwd) {
 		FTPClient cli = new FTPClient();
+		int reply = 0;
 		try {
-			cli.openServer(serverIP);
-			// System.out.println(ser.user+ser.pass);
+			cli.connect(serverIP);
+			reply = cli.getReplyCode();
+			if(!FTPReply.isPositiveCompletion(reply)) {
+		        cli.disconnect();
+		        log.error("PowerFTP: FTP server refused connection.");
+		        System.exit(1);
+		      }
 			cli.login(user, passwd);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			System.out.print("Connection error: ip=" + serverIP + " user="
-					+ user + " Password=" + passwd);
-			e.printStackTrace();
+			log.error("PowerFTP: " + e);
 			cli = null;
 		}
 		return cli;
+	}
+	public void jFileGet(String serverIP, String user, String passwd,
+			 String dir, String file,  String mode) {
+
+	}
+	
+	public void jFilePut(String serverIP, String user, String passwd,
+			 String dir, String file, String mode) {
+
+	}
+
+	void jDirGet(String serverIP, String user, String passwd,
+			 String dir) {
+
+	}
+
+	void jDirPut(String serverIP, String user, String passwd,
+			 String dir) {
+
 	}
 }
