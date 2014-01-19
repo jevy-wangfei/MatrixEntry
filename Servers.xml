@@ -7,7 +7,6 @@
 		<remoteDir>test</remoteDir>
 		<localDir>D:\\</localDir>
 		<!--remote or local file decided by mode-->
-		<file>wf.txt</file>
 		<coding>ascii</coding>
 		<direction>get</direction>
 		<port>21</port>
@@ -19,7 +18,6 @@
 		<remoteDir>test</remoteDir>
 		<localDir>D:\\</localDir>
 		<!--remote or local file decided by mode-->
-		<file>wf2.txt</file>
 		<coding>ascii</coding>
 		<direction>get</direction>
 		<port>21</port>

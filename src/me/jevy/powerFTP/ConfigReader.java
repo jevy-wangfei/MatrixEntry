@@ -15,13 +15,13 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class ConfigReader {
 	private String configFile = null;
-
+	private int countServer = 0;
 
 	List<Server> list = new ArrayList<Server>();
 	private Log log = LogFactory.getLog(ConfigReader.class);
@@ -34,7 +34,6 @@ public class ConfigReader {
 	
 	
 	public List<Server> getServerList() {
-		
 		DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
 
 		DocumentBuilder dombuilder = null;
@@ -58,59 +57,34 @@ public class ConfigReader {
 		} catch (IOException e) {
 			log.error("ConfigReader: " + e);
 		}
-		NodeList xmlServers = doc.getElementsByTagName("server");
-		log.debug("ConfigReader Before XMLServers.length: " + xmlServers.getLength());
-System.out.println("Before XMLServers.length: "+xmlServers.getLength());
+		Element root = doc.getDocumentElement();
+		NodeList xmlServers = root.getElementsByTagName("server");
+		log.info("ConfigReader: The servers configre file have(has) " + xmlServers.getLength() + " file(s).");
 		
 		if (xmlServers != null) {
-			
 			for (int i = 0; i < xmlServers.getLength(); i++) {
-				Node server = xmlServers.item(i);
-				
-				log.info("ConfigReader NodeServer.nodeName"+server.getNodeName()+
-							"NodeServer.nodevalue"+server.getNodeValue());
-System.out.println("NodeServer.nodeName"+server.getNodeName()+
-							"NodeServer.nodevalue"+server.getNodeValue());
-				
 				Server serverInst= new Server();
-				
-				NodeList attributeList = server.getChildNodes();
-				for(int j=0; j<attributeList.getLength(); j++){
-					String attribute = attributeList.item(j).getNodeName().toUpperCase();
-					String value = attributeList.item(j).getNodeValue();
-					if(attribute.equals("IP"))
-						serverInst.setIp(value);
-					else if(attribute.equals("USER"))
-						serverInst.setUser(value);
-					else if(attribute.equals("PASS"))
-						serverInst.setPass(value);
-					else if(attribute.equals("CODING"))
-						serverInst.setCoding(value);
-					else if(attribute.equals("DIRECTION"))
-						serverInst.setDirection(value);
-					else if(attribute.equals("FILE"))
-						serverInst.setFile(value);
-					else if(attribute.equals("LOCALDIR"))
-						serverInst.setLocalDir(value);
-					else if(attribute.equals("REMOTEDIR"))
-						serverInst.setRemoteDir(value);
-					else if(attribute.equals("PORT"))
-						serverInst.setPort(value);
-						
-					serverInst.setIp(attribute);
-				}
+				Element server = (Element)xmlServers.item(i);
+				this.countServer++;
+				log.info("ConfigReader: Reading the "+ this.countServer+" server configureation : "+server.getElementsByTagName("ip").item(0).getTextContent() + ".");
 
+				serverInst.setCoding(server.getElementsByTagName("coding").item(0).getTextContent());
+				serverInst.setIp(server.getElementsByTagName("ip").item(0).getTextContent());
+				serverInst.setUser(server.getElementsByTagName("user").item(0).getTextContent());
+				serverInst.setPass(server.getElementsByTagName("password").item(0).getTextContent());
+				serverInst.setDirection(server.getElementsByTagName("direction").item(0).getTextContent());
+				serverInst.setLocalDir(server.getElementsByTagName("localDir").item(0).getTextContent());
+				serverInst.setRemoteDir(server.getElementsByTagName("remoteDir").item(0).getTextContent());
+				serverInst.setPort(server.getElementsByTagName("port").item(0).getTextContent());
+				
 				if(serverInst != null){
 					log.debug("ConfigReader: " + serverInst.getIp()+serverInst.user+serverInst.pass+
 							serverInst.remoteDir+serverInst.file+serverInst.coding+serverInst.direction);
-System.out.println(serverInst.getIp()+serverInst.user+serverInst.pass+
-							serverInst.remoteDir+serverInst.file+serverInst.coding+serverInst.direction);
-
-					list.add(serverInst);	
+					list.add(serverInst);
+					log.info("ConfigReader: Server " + serverInst.getIp() + " has been readed.");
 				}
-				
 			}
-		}
+		} 
 		return list;
 	}
 	
@@ -122,7 +96,7 @@ System.out.println(serverInst.getIp()+serverInst.user+serverInst.pass+
 	}
 	
 	public static void main(String[] args){
-		System.out.println((new File("").getAbsolutePath())+"\\Servers.xml");
+		//System.out.println((new File("").getAbsolutePath())+"\\Servers.xml");
 		new ConfigReader((new File("").getAbsolutePath())+"\\Servers.xml").getServerList();
 	}
 }
