@@ -46,6 +46,11 @@ public class ConfigReader {
 		}
 
 		try {
+			if(this.configFile.equals(null)){
+				log.info("ConfigReader: configFile doesn't initalized. \n"
+						+ "You should initalize this class by constractor ConfigReader(String configFile).\n"
+						+ "Or, you can set the configureFile by the methord setConfigFile(String configFile).");
+			}
 			is = new FileInputStream(this.configFile);
 		} catch (FileNotFoundException e) {
 			log.error("ConfigReader: " + e);
@@ -59,29 +64,23 @@ public class ConfigReader {
 		}
 		Element root = doc.getDocumentElement();
 		NodeList xmlServers = root.getElementsByTagName("server");
-		log.info("ConfigReader: The servers configre file have(has) " + xmlServers.getLength() + " file(s).");
+		log.info("ConfigReader: The configre file contains " + xmlServers.getLength() + " file(s).");
 		
 		if (xmlServers != null) {
 			for (int i = 0; i < xmlServers.getLength(); i++) {
 				Server serverInst= new Server();
 				Element server = (Element)xmlServers.item(i);
 				this.countServer++;
-				log.info("ConfigReader: Reading the "+ this.countServer+" server configureation : "+server.getElementsByTagName("ip").item(0).getTextContent() + ".");
-
-				serverInst.setCoding(server.getElementsByTagName("coding").item(0).getTextContent());
+				
 				serverInst.setIp(server.getElementsByTagName("ip").item(0).getTextContent());
 				serverInst.setUser(server.getElementsByTagName("user").item(0).getTextContent());
 				serverInst.setPass(server.getElementsByTagName("password").item(0).getTextContent());
-				serverInst.setDirection(server.getElementsByTagName("direction").item(0).getTextContent());
-				serverInst.setLocalDir(server.getElementsByTagName("localDir").item(0).getTextContent());
-				serverInst.setRemoteDir(server.getElementsByTagName("remoteDir").item(0).getTextContent());
-				serverInst.setPort(server.getElementsByTagName("port").item(0).getTextContent());
-				
+				log.info("ConfigReader: Reading server config : # "+ this.countServer+" : IP: "+serverInst.getIp() +" : "+ serverInst.getUser()+ " : " + serverInst.getPass());
+
 				if(serverInst != null){
 					log.debug("ConfigReader: " + serverInst.getIp()+serverInst.user+serverInst.pass+
 							serverInst.remoteDir+serverInst.file+serverInst.coding+serverInst.direction);
 					list.add(serverInst);
-					log.info("ConfigReader: Server " + serverInst.getIp() + " has been readed.");
 				}
 			}
 		} 
@@ -97,6 +96,7 @@ public class ConfigReader {
 	
 	public static void main(String[] args){
 		//System.out.println((new File("").getAbsolutePath())+"\\Servers.xml");
-		new ConfigReader((new File("").getAbsolutePath())+"\\Servers.xml").getServerList();
+		//new ConfigReader((new File("").getAbsolutePath())+"\\Servers.xml").getServerList();
+		new ConfigReader("./Servers.xml").getServerList();
 	}
 }

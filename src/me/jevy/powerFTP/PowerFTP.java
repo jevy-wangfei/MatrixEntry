@@ -23,220 +23,89 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.*;
 
 public class PowerFTP {
-	String configFile = (new File("").getAbsolutePath())+"Servers.xml";
+	String configFile = "./Servers.xml";
 	private Log log = LogFactory.getLog(PowerFTP.class);
 	private int num = 0;
 	private List serverList = null;
-	
-	
-	public PowerFTP(){
-		
-		
-	}
-	public PowerFTP(List servers){
-		
-	}
-	private Date date = new Date();
 
-	String ran = "" + date.getYear() + date.getMonth() + date.getDay()
-			+ date.getHours() + date.getMinutes() + date.getSeconds();
+	public PowerFTP() {
+		this.serverList = new ConfigReader(configFile).getServerList();
+	}
 
 	/**
 	 * @param args
 	 */
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		while (true) {
+			Scanner c = new Scanner(System.in);
+			String command = null;
 
-		Scanner c = new Scanner(System.in);
-		String first = c.next();
-		String second = c.next();
-		PowerFTP jftp = new PowerFTP();
-		if ("-f".equals(first)) {
-			jftp.configFile = second;
-		} else if ("-c".equals(first)) {
-			String[] parms = second.split(":");
-			String serverIP = parms[0];
-			String user = parms[1];
-			String passwd = parms[2];
-			String transfer = parms[3];
-			String dir = parms[4];
-			String file = parms[5];
-			String mode = null;
-			if (parms.length == 7) {
-				mode = parms[6];
+			if(c.hasNext()){
+				command = c.next();
 			}
-			if("get".equals(transfer.toLowerCase())){
-				jftp.jFileGet(serverIP, user, passwd,dir, file, mode);
-			}else if("put".equals(transfer.toLowerCase())){
-				jftp.jFilePut(serverIP, user, passwd, dir, file, mode);
+			List<String> files = new ArrayList();
+			while(c.hasNext()){
+				files.add(c.next());
 			}
 			
-		} else if("-d".equals(first)){
-			String[] parms = second.split(":");
-			String serverIP = parms[0];
-			String user = parms[1];
-			String passwd = parms[2];
-			String transfer = parms[3];
-			String dir = parms[4];
-			if("get".equals(transfer.toLowerCase())){
-				jftp.jDirGet(serverIP, user, passwd, dir);
-			}else if("put".equals(transfer.toLowerCase())){
-				jftp.jDirPut(serverIP, user, passwd, dir);
-			}
-		}
-		else if (null == first || "-f".equals(c.next())|| "-c".equals(c.next())) {
-			System.out
-					.println("Usage: \n"
-							+
-
-							  "     -f xmlConfigureFile:[ascii/bin]  \n"+
-							  "        --Use Servers configure file to control up/down load file\n"+
-							  "     -c serverIP:user:passwd:getORput:dir:file:[ascii/bin]\n" +
-							  "        --Get Or Put a File, Transfer Mode is Auto if No Identify\n" +
-							  "     -d serverIP:user:passwd:getORput:dir\n" +
-							  "        --Get Or Put a Dir, Transfer Mode is Auto");
-		}
-
-	}
-
-	/*private void ConfigFile(String file) {
-		System.out.println("Total Files:" + this.servers.size());
-		for (int i = 0; i < this.servers.size(); i++) {
-			if ("get".equals(this.servers.get(i).getMode())) {
-				this.jGet((Server) this.servers.get(i));
-				this.num++;
-				System.out.println("--" + (i + 1) + "/" + this.servers.size()
-						+ " Files geted,  Transfer mode: "
-						+ this.servers.get(i).getTransfer());
+			PowerFTP powerFTP = new PowerFTP();
+			
+			if ("ASCII".equals(command.toUpperCase())) {
+				powerFTP.setCoding(command.toLowerCase());
+			} else if ("BIN".equals(command.toUpperCase())) {
+				powerFTP.setCoding(command.toLowerCase());
+			} else if ("LCD".equals(command.toUpperCase())){
+				powerFTP.setLocalDir(command.toLowerCase());
+			} else if ("CD".equals(command.toUpperCase())){
+				powerFTP.setRemoteDir(command.toLowerCase());
+			} else if ("PUT".equals(command.toUpperCase())){
+				powerFTP.putfiles(files);
+			} else if ("HELP".equals(command.toUpperCase())){
+				powerFTP.printHelp();
+			} else if ("QUIT".equals(command.toUpperCase())||"EXIT".equals(command.toUpperCase())||"BYE".equals(command.toUpperCase())){
+				System.exit(0);
+			} else if("PORT".equals(command.toUpperCase())){
+				powerFTP.setPort(files.get(0));
 			} else {
-				this.jPut((Server) this.servers.get(i));
-				this.num++;
-				System.out.println("--" + (i + 1) + "/" + this.servers.size()
-						+ " Files puted,  Transfer mode: "
-						+ this.servers.get(i).getTransfer());
+			}
+				powerFTP.printHelp();
+				System.exit(0);
 			}
 		}
-		System.out.println("Success Transfer files: " + this.num + "/"
-				+ this.servers.size());
-		System.out.println("BYE");
-	}
-*/
-
-
-	void jGet(Server ser) {
-		FTPClient cli = this.conn(ser.getIp(),ser.getUser(),ser.getPass());
-		try {
-			if (ser.getRemoteDir().length() != 0) {
-				cli.changeWorkingDirectory(ser.getRemoteDir());
-				
-			}
-			InputStream is = cli.retrieveFileStream(ser.getFile());
-
-			File file_out = new File(ser.getLocalDir());
-			// System.out.println(file_out.getPath()+file_out.getName());
-			File[] files = file_out.listFiles();
-			for (int i = 0; i < files.length; i++) {
-				if (files[i].getName().toString().equals(
-						ser.getFile().toString())) {
-					// System.out.println(i+files[i].getName()+":"+ser.file);
-					files[i].renameTo(new File(ser.getLocalDir()
-							+ files[i].getName() + ".bak" + this.ran));
-				}
-			}
-			file_out.delete();
-			file_out = new File(ser.getLocalDir() + ser.getFile());
-			FileOutputStream os = new FileOutputStream(file_out);
-			byte[] bytes = new byte[1024];
-			int c;
-			while ((c = is.read(bytes)) != -1) {
-				os.write(bytes, 0, c);
-			}
-			is.close();
-			os.close();
-			cli.disconnect();
-		} catch (IOException ex) {
-			System.out.println("Get File Error:");
-			ex.printStackTrace();
-			this.num--;
-		}
-	}
-
-	void jPut(Server ser, String file) {
-		FTPClient cli = this.conn(ser.getIp(),ser.getUser(),ser.getPass());
-		try {
-			if (ser.getRemoteDir().length() != 0) {
-				cli.changeWorkingDirectory(ser.getRemoteDir());
-			}
-			List filesList = new ArrayList();
-			//DataInputStream dis = new DataInputStream(cli.nameList("./"));
-			String filename = "";
-			//while ((filename = dis.readLine()) != null) {
-			//	filesList.add(filename);
-			//}
-			for (int n = 0; n < filesList.size(); n++) {
-				if (ser.getFile().toString()
-						.equals(filesList.get(n).toString())) {
-					cli.rename(filesList.get(n).toString(), filesList.get(n)
-							+ ".bak" + this.ran);
-				}
-			}
-
-			//OutputStream os = cli.remoteStore(ser.getFile());
-			File file_in = new File(ser.getLocalDir() + ser.getFile());
-			FileInputStream is = new FileInputStream(file_in);
-			byte[] bytes = new byte[1024];
-			int c;
-			while ((c = is.read(bytes)) != -1) {
-				//os.write(bytes, 0, c);
-			}
-			is.close();
-			//os.close();
-
-			cli.disconnect();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			this.num--;
-		}
-
-	}
-
-	FTPClient conn(String serverIP, String user, String passwd) {
-		FTPClient cli = new FTPClient();
-		int reply = 0;
-		try {
-			cli.connect(serverIP);
-			reply = cli.getReplyCode();
-			if(!FTPReply.isPositiveCompletion(reply)) {
-		        cli.disconnect();
-		        log.error("PowerFTP: FTP server refused connection.");
-		        System.exit(1);
-		      }
-			cli.login(user, passwd);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			log.error("PowerFTP: " + e);
-			cli = null;
-		}
-		return cli;
-	}
-	public void jFileGet(String serverIP, String user, String passwd,
-			 String dir, String file,  String mode) {
-
-	}
 	
-	public void jFilePut(String serverIP, String user, String passwd,
-			 String dir, String file, String mode) {
-
+	void setCoding(String coding){
+		
 	}
-
-	void jDirGet(String serverIP, String user, String passwd,
-			 String dir) {
-
+	void setPort(String port){
+		
 	}
-
-	void jDirPut(String serverIP, String user, String passwd,
-			 String dir) {
-
+	void setLocalDir(String localDir){
+		
 	}
+	void setRemoteDir(String remoteDir){
+		
+	}
+	void putfiles(List fileList){
+		
+	}
+	void printHelp(){
+		System.out.println("Usage: \n"
+				+ "     put file [file2 file3 ...]  \n"
+				+ "        --put the file(s) of current directory to the current remote directory\n"
+				+ "        --use lcd command to change local directory."
+				+ "        --use cd command to change remote directory."
+				+ "     lcd directory\n"
+				+ "        --change local directory.\n"
+				+ "     cd directory\n"
+				+ "        --change remote directory.\n"
+				+ "     assii\n"
+				+ "        --set transfer coding to assii.\n"
+				+ "     bin\n"
+				+ "        --set transfer coding to bin\n"
+				+ "     port number\n"
+				+ "        --set file transfer port to number, default port is 21.");
+	}
+		
 }

@@ -9,7 +9,7 @@ public class Server {
 
 	String pass = null;
 
-	String remoteDir = null;
+	String remoteDir = new File("").getAbsolutePath();
 
 	String localDir = new File("").getAbsolutePath();
 
