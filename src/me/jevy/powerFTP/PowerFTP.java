@@ -1,13 +1,5 @@
 package me.jevy.powerFTP;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.*;
 
 import org.apache.commons.logging.Log;
@@ -37,7 +29,10 @@ public class PowerFTP {
 	 */
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		PowerFTP f = new PowerFTP();
+		f.setCoding("Test");
+		
+		/*
 		while (true) {
 			Scanner c = new Scanner(System.in);
 			String command = null;
@@ -73,22 +68,43 @@ public class PowerFTP {
 				powerFTP.printHelp();
 				System.exit(0);
 			}
+			*/
 		}
 	
 	void setCoding(String coding){
+		for(Iterator it=serverList.iterator(); it.hasNext();){
+			((Server)it.next()).setCoding(coding);
+			log.info("PowerFTP: Set transfer coding to " + coding);
+		}
 		
 	}
 	void setPort(String port){
-		
+		for(Iterator it=serverList.iterator(); it.hasNext();){
+			((Server)it.next()).setPort(port);
+			log.info("PowerFTP: Set transfer coding to " + port);
+		}
 	}
 	void setLocalDir(String localDir){
-		
+		for(Iterator it=serverList.iterator(); it.hasNext();){
+			((Server)it.next()).setLocalDir(localDir);
+			log.info("PowerFTP: Set transfer coding to " + localDir);
+		}
 	}
 	void setRemoteDir(String remoteDir){
-		
+		for(Iterator it=serverList.iterator(); it.hasNext();){
+			((Server)it.next()).setRemoteDir(remoteDir);
+			log.info("PowerFTP: Set transfer coding to " + remoteDir);
+		}
 	}
 	void putfiles(List fileList){
-		
+		for(Iterator files=fileList.iterator(); files.hasNext();){
+			for(Iterator servers=this.serverList.iterator(); servers.hasNext();){
+				PutFile putFileThread = new PutFile((Server)servers.next());
+				putFileThread.setFile((String)files.next());
+				new Thread(putFileThread).run();
+			}
+			
+		}
 	}
 	void printHelp(){
 		System.out.println("Usage: \n"
