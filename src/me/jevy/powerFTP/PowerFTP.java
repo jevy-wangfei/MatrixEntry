@@ -31,6 +31,10 @@ public class PowerFTP {
 	public static void main(String[] args) {
 		PowerFTP f = new PowerFTP();
 		f.setCoding("Test");
+		List a = new ArrayList();
+		a.add("Test");
+		
+		f.putfiles(a);
 		
 		/*
 		while (true) {
@@ -98,10 +102,9 @@ public class PowerFTP {
 	}
 	void putfiles(List fileList){
 		for(Iterator files=fileList.iterator(); files.hasNext();){
+			String file = (String)files.next();
 			for(Iterator servers=this.serverList.iterator(); servers.hasNext();){
-				PutFile putFileThread = new PutFile((Server)servers.next());
-				putFileThread.setFile((String)files.next());
-				new Thread(putFileThread).run();
+				new Thread(new PutFile((Server)servers.next(), file)).run();
 			}
 			
 		}
