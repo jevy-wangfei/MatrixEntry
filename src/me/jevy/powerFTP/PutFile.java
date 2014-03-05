@@ -6,21 +6,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
+import org.apache.log4j.Logger;
 
 public class PutFile implements Runnable {
 	private Server server;
-	private Log log;
+	private static Logger log;
 	private String file;
 
 	public PutFile(Server server, String file) {
 		// TODO Auto-generated constructor stub
 		this.server = server;
 		this.file = file;
-		log = LogFactory.getLog(PutFile.class);
+		log = Logger.getLogger(PutFile.class.getName());
 	}
 	
 	

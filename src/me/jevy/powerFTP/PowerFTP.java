@@ -1,52 +1,36 @@
 package me.jevy.powerFTP;
 
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPReply;
-import org.xml.sax.*;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.apache.log4j.Logger;
 
-import javax.xml.parsers.*;
 
 public class PowerFTP {
 	String configFile = "./Servers.xml";
-	private Log log = LogFactory.getLog(PowerFTP.class);
+	private Logger log = Logger.getLogger(PowerFTP.class.getName());
 	private int num = 0;
-	private List serverList = null;
-
+	private List serverList = serverList = new ConfigReader(configFile).getServerList();
 	public PowerFTP() {
-		this.serverList = new ConfigReader(configFile).getServerList();
 	}
 
 	/**
 	 * @param args
 	 */
 	
-	public static void main(String[] args) {
-		PowerFTP f = new PowerFTP();
-		f.setCoding("Test");
-		List a = new ArrayList();
-		a.add("Test");
-		
-		f.putfiles(a);
-		
-		/*
+	public static void main(String[] args) throws IOException {
 		while (true) {
-			Scanner c = new Scanner(System.in);
-			String command = null;
-
-			if(c.hasNext()){
-				command = c.next();
-			}
-			List<String> files = new ArrayList();
-			while(c.hasNext()){
-				files.add(c.next());
+			BufferedReader in = 
+					new BufferedReader(new InputStreamReader(System.in));
+			String[] commands = in.readLine().replaceAll("\\s{1,}", " ").split(" ");
+			String command = commands[0];
+			List<String> files = new ArrayList<String>();
+			for(int i=1; i<commands.length; i++){
+				files.add(commands[i]);
 			}
 			
 			PowerFTP powerFTP = new PowerFTP();
@@ -68,36 +52,35 @@ public class PowerFTP {
 			} else if("PORT".equals(command.toUpperCase())){
 				powerFTP.setPort(files.get(0));
 			} else {
-			}
 				powerFTP.printHelp();
 				System.exit(0);
 			}
-			*/
 		}
+	}
 	
 	void setCoding(String coding){
 		for(Iterator it=serverList.iterator(); it.hasNext();){
 			((Server)it.next()).setCoding(coding);
-			log.info("PowerFTP: Set transfer coding to " + coding);
+			log.info("Set transfer coding to " + coding);
 		}
 		
 	}
 	void setPort(String port){
 		for(Iterator it=serverList.iterator(); it.hasNext();){
 			((Server)it.next()).setPort(port);
-			log.info("PowerFTP: Set transfer coding to " + port);
+			log.info("Set transfer coding to " + port);
 		}
 	}
 	void setLocalDir(String localDir){
 		for(Iterator it=serverList.iterator(); it.hasNext();){
 			((Server)it.next()).setLocalDir(localDir);
-			log.info("PowerFTP: Set transfer coding to " + localDir);
+			log.info("Set transfer coding to " + localDir);
 		}
 	}
 	void setRemoteDir(String remoteDir){
 		for(Iterator it=serverList.iterator(); it.hasNext();){
 			((Server)it.next()).setRemoteDir(remoteDir);
-			log.info("PowerFTP: Set transfer coding to " + remoteDir);
+			log.info("Set transfer coding to " + remoteDir);
 		}
 	}
 	void putfiles(List fileList){
