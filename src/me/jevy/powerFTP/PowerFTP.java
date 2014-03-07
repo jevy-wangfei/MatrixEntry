@@ -45,6 +45,8 @@ public class PowerFTP {
 				powerFTP.setRemoteDir(command.toLowerCase());
 			} else if ("PUT".equals(command.toUpperCase())){
 				powerFTP.putfiles(files);
+			} else if("RM".equals(command.toUpperCase())){
+				powerFTP.removeFiles(files);
 			} else if ("HELP".equals(command.toUpperCase())){
 				powerFTP.printHelp();
 			} else if ("QUIT".equals(command.toUpperCase())||"EXIT".equals(command.toUpperCase())||"BYE".equals(command.toUpperCase())){
@@ -89,7 +91,14 @@ public class PowerFTP {
 			for(Iterator servers=this.serverList.iterator(); servers.hasNext();){
 				new Thread(new PutFile((Server)servers.next(), file)).run();
 			}
-			
+		}
+	}
+	void removeFiles(List fileList){
+		for(Iterator files=fileList.iterator(); files.hasNext();){
+			String file = (String)files.next();
+			for(Iterator servers=this.serverList.iterator(); servers.hasNext();){
+				new Thread(new RemoveFiles((Server)servers.next(), file)).run();
+			}
 		}
 	}
 	void printHelp(){
@@ -98,10 +107,12 @@ public class PowerFTP {
 				+ "        --put the file(s) of current directory to the current remote directory\n"
 				+ "        --use lcd command to change local directory."
 				+ "        --use cd command to change remote directory."
-				+ "     lcd directory\n"
-				+ "        --change local directory.\n"
-				+ "     cd directory\n"
+				+ "     lcd directory (Shoule be full directory)\n"
+				+ "        --change local directory. \n"
+				+ "          Example: lcd D:\\hadoop\\hadoop.zip \n"
+				+ "     cd directory (Should be full directory)\n"
 				+ "        --change remote directory.\n"
+				+ "          Example: cd /home/hadoop\n"
 				+ "     assii\n"
 				+ "        --set transfer coding to assii.\n"
 				+ "     bin\n"
