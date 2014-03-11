@@ -25,8 +25,8 @@ public class PutFile implements Runnable {
 	
 	
 	void put(){
-		System.out.println("File put....");
-		/*
+		//System.out.println("File put....");
+		
 		FTPClient cli = new FTPClient();
 		int reply = 0;
 		try {
@@ -61,11 +61,11 @@ public class PutFile implements Runnable {
                 try {   
                     cli.disconnect();   
                 } catch (IOException ioe) {   
-                	log.error("PutFile.put(): " + e);
+                	log.error("PutFile.put(): " + ioe);
                 }   
             }   
         }   
-        */
+        
     }
 
 	@Override

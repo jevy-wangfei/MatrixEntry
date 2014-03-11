@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <servers>
 	<server>
-		<ip>192.168.1.248</ip>
+		<ip>10.188.27.80</ip>
 		<user>jevy</user>
-		<password>jevy</password>
+		<password>continue</password>
 	</server>
-	<server>
-		<ip>192.168.1.248</ip>
-		<user>jevy</user>
-		<password>jevy</password>
-	</server>
+
 </servers>

@@ -11,9 +11,10 @@ public abstract class Test {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		//System.out.println((new File("")).getAbsolutePath());
-		Scanner c = new Scanner(System.in);
-		System.out.println("Test:" + c.next()+c.next()+c.next());
+		System.out.println(System.getProperty("path.separator"));
+		System.out.println(System.getProperty("file.separator"));
+		//Scanner c = new Scanner(System.in);
+		//System.out.println("Test:" + c.next()+c.next()+c.next());
 	}
 
 }

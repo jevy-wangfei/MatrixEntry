@@ -14,7 +14,7 @@ public class PowerFTP {
 	String configFile = "./Servers.xml";
 	private Logger log = Logger.getLogger(PowerFTP.class.getName());
 	private int num = 0;
-	private List serverList = serverList = new ConfigReader(configFile).getServerList();
+	private List serverList = new ConfigReader(configFile).getServerList();
 	public PowerFTP() {
 	}
 
@@ -23,6 +23,7 @@ public class PowerFTP {
 	 */
 	
 	public static void main(String[] args) throws IOException {
+		PowerFTP powerFTP = new PowerFTP();
 		while (true) {
 			BufferedReader in = 
 					new BufferedReader(new InputStreamReader(System.in));
@@ -33,19 +34,17 @@ public class PowerFTP {
 				files.add(commands[i]);
 			}
 			
-			PowerFTP powerFTP = new PowerFTP();
-			
 			if ("ASCII".equals(command.toUpperCase())) {
 				powerFTP.setCoding(command.toLowerCase());
 			} else if ("BIN".equals(command.toUpperCase())) {
 				powerFTP.setCoding(command.toLowerCase());
 			} else if ("LCD".equals(command.toUpperCase())){
-				powerFTP.setLocalDir(command.toLowerCase());
+				powerFTP.setLocalDir(files.get(0));
 			} else if ("CD".equals(command.toUpperCase())){
-				powerFTP.setRemoteDir(command.toLowerCase());
+				powerFTP.setRemoteDir(files.get(0));
 			} else if ("PUT".equals(command.toUpperCase())){
 				powerFTP.putfiles(files);
-			} else if("RM".equals(command.toUpperCase())){
+			} else if("RM".equals(command.toUpperCase())||"REMOVE".equals(command.toUpperCase())){
 				powerFTP.removeFiles(files);
 			} else if ("HELP".equals(command.toUpperCase())){
 				powerFTP.printHelp();
@@ -63,26 +62,26 @@ public class PowerFTP {
 	void setCoding(String coding){
 		for(Iterator it=serverList.iterator(); it.hasNext();){
 			((Server)it.next()).setCoding(coding);
-			log.info("Set transfer coding to " + coding);
+			log.info("Set Transfer Code to " + coding);
 		}
 		
 	}
 	void setPort(String port){
 		for(Iterator it=serverList.iterator(); it.hasNext();){
 			((Server)it.next()).setPort(port);
-			log.info("Set transfer coding to " + port);
+			log.info("Set Transfer Port to " + port);
 		}
 	}
 	void setLocalDir(String localDir){
 		for(Iterator it=serverList.iterator(); it.hasNext();){
 			((Server)it.next()).setLocalDir(localDir);
-			log.info("Set transfer coding to " + localDir);
+			log.info("Set Local Directory to " + localDir);
 		}
 	}
 	void setRemoteDir(String remoteDir){
 		for(Iterator it=serverList.iterator(); it.hasNext();){
 			((Server)it.next()).setRemoteDir(remoteDir);
-			log.info("Set transfer coding to " + remoteDir);
+			log.info("Set Remote Directory to " + remoteDir);
 		}
 	}
 	void putfiles(List fileList){
@@ -107,6 +106,8 @@ public class PowerFTP {
 				+ "        --put the file(s) of current directory to the current remote directory\n"
 				+ "        --use lcd command to change local directory."
 				+ "        --use cd command to change remote directory."
+				+ "		rm file [file2 file3 ...]\n"
+				+ "		   --remove remote server file(s) \n"
 				+ "     lcd directory (Shoule be full directory)\n"
 				+ "        --change local directory. \n"
 				+ "          Example: lcd D:\\hadoop\\hadoop.zip \n"

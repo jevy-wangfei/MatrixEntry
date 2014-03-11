@@ -63,7 +63,7 @@ public class ConfigReader {
 		}
 		Element root = doc.getDocumentElement();
 		NodeList xmlServers = root.getElementsByTagName("server");
-		log.info("The configre file contains " + xmlServers.getLength() + " file(s).");
+		log.info("The server configure file contains " + xmlServers.getLength() + " server(s).");
 		
 		if (xmlServers != null) {
 			for (int i = 0; i < xmlServers.getLength(); i++) {
