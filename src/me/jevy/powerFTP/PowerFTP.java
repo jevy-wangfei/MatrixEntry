@@ -45,6 +45,7 @@ public class PowerFTP {
 			} else if ("PUT".equals(command.toUpperCase())){
 				powerFTP.putfiles(files);
 			} else if("RM".equals(command.toUpperCase())||"REMOVE".equals(command.toUpperCase())){
+			} else if("RM".equals(command.toUpperCase())){
 				powerFTP.removeFiles(files);
 			} else if ("HELP".equals(command.toUpperCase())){
 				powerFTP.printHelp();

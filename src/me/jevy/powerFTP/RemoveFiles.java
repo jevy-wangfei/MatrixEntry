@@ -88,4 +88,5 @@ public class RemoveFiles implements Runnable {
 	public void setFile(String file) {
 		this.file = file;
 	}
+
 }
