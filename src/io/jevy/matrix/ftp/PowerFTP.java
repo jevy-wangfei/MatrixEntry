@@ -1,4 +1,7 @@
-package me.jevy.powerFTP;
+package io.jevy.matrix.ftp;
+
+import io.jevy.matrix.conf.ConfigReader;
+import io.jevy.matrix.conf.Server;
 
 import java.io.BufferedReader;
 import java.io.IOException;

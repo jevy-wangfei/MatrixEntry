@@ -1,4 +1,6 @@
-package me.jevy.powerFTP;
+package io.jevy.matrix.ftp;
+
+import io.jevy.matrix.conf.Server;
 
 import java.io.File;
 import java.io.FileInputStream;

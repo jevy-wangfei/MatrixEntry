@@ -1,4 +1,6 @@
-package me.jevy.powerFTP;
+package io.jevy.matrix.ftp;
+
+import io.jevy.matrix.conf.Server;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +11,7 @@ import java.util.List;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.apache.log4j.Logger;
+
 
 public class PutFile implements Runnable {
 	private Server server;

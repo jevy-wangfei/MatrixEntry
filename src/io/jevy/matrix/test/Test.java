@@ -1,4 +1,4 @@
-package me.jevy.powerFTP;
+package io.jevy.matrix.test;
 
 import java.io.File;
 import java.util.Scanner;

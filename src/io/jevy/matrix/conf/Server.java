@@ -1,25 +1,25 @@
-package me.jevy.powerFTP;
+package io.jevy.matrix.conf;
 
 import java.io.File;
 
 public class Server {
-	String ip = null;
+	public String ip = null;
 
-	String user = null;
+	public String user = null;
 
-	String pass = null;
+	public String pass = null;
 
-	String remoteDir = new File("").getAbsolutePath();
+	public String remoteDir = new File("").getAbsolutePath();
 
-	String localDir = new File("").getAbsolutePath();
+	public String localDir = new File("").getAbsolutePath();
 
-	String file = null;
+	public String file = null;
 	
-	String coding = "ascii";
+	public String coding = "ascii";
 
-	String direction = "get";
+	public String direction = "get";
 
-	String port = "21";
+	public String port = "21";
 
 	public String getCoding() {
 		return coding;
