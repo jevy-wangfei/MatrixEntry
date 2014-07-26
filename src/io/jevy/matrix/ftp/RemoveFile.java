@@ -12,12 +12,13 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.apache.log4j.Logger;
 
-public class RemoveFiles implements Runnable {
+public class RemoveFile implements Runnable {
 	private Server server;
 	private static Logger log;
 	private String file;
+	public boolean flag = false;
 
-	public RemoveFiles(Server server, String file) {
+	public RemoveFile(Server server, String file) {
 		// TODO Auto-generated constructor stub
 		this.server = server;
 		this.file = file;
@@ -50,7 +51,7 @@ public class RemoveFiles implements Runnable {
 		try {
 			//cli.setFileTransferMode(mode)
 			//cli.changeWorkingDirectory(server.getRemoteDir());
-			cli.deleteFile(server.getRemoteDir()+"/"+this.file);
+			flag = cli.deleteFile(server.getRemoteDir()+"/"+this.file);
 			//FileInputStream fileInput=new FileInputStream(new File(server.getLocalDir() + "/" + this.file));
 			//cli.storeFile(file, fileInput);
 			//fileInput.close();

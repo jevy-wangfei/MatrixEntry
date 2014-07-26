@@ -5,8 +5,6 @@ import io.jevy.matrix.conf.Server;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
@@ -17,6 +15,7 @@ public class PutFile implements Runnable {
 	private Server server;
 	private static Logger log;
 	private String file;
+	public boolean flag = false;
 
 	public PutFile(Server server, String file) {
 		// TODO Auto-generated constructor stub
@@ -52,7 +51,7 @@ public class PutFile implements Runnable {
 			//cli.setFileTransferMode(mode)
 			cli.changeWorkingDirectory(server.getRemoteDir());
 			FileInputStream fileInput=new FileInputStream(new File(server.getLocalDir() + "/" + this.file));
-			cli.storeFile(file, fileInput);
+			this.flag = cli.storeFile(file, fileInput);
 			fileInput.close();
 			cli.logout();
 			cli.disconnect();
@@ -78,10 +77,6 @@ public class PutFile implements Runnable {
 
 	}
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
 
 	public String getFile() {
 		return file;

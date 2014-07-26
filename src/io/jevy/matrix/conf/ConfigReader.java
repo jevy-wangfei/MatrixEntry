@@ -18,7 +18,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class ConfigReader {
-	private String configFile = null;
+	private String configFile = "./Servers.xml";
 	private int countServer = 0;
 
 	List<Server> list = new ArrayList<Server>();
@@ -90,9 +90,6 @@ public class ConfigReader {
 	
 	public String getConfigFile() {
 		return configFile;
-	}
-	public void setConfigFile(String configFile) {
-		this.configFile = configFile;
 	}
 	
 	public static void main(String[] args){

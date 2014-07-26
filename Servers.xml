@@ -5,5 +5,17 @@
 		<user>jevy</user>
 		<password>continue</password>
 	</server>
+	
+	<server>
+		<ip>10.188.27.81</ip>
+		<user>jevy1</user>
+		<password>continue1</password>
+	</server>
+	
+	<server>
+		<ip>10.188.27.82</ip>
+		<user>jevy2</user>
+		<password>continue2</password>
+	</server>
 
 </servers>

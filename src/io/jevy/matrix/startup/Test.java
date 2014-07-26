@@ -1,4 +1,4 @@
-package io.jevy.matrix.test;
+package io.jevy.matrix.startup;
 
 import java.io.File;
 import java.util.Scanner;
@@ -15,6 +15,7 @@ public abstract class Test {
 		System.out.println(System.getProperty("file.separator"));
 		//Scanner c = new Scanner(System.in);
 		//System.out.println("Test:" + c.next()+c.next()+c.next());
+		
 	}
 
 }
