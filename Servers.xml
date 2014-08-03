@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <servers>
 	<server>
-		<ip>10.188.27.80</ip>
+		<ip>192.168.1.111</ip>
 		<user>jevy</user>
 		<password>continue</password>
 	</server>
 	
 	<server>
 		<ip>10.188.27.81</ip>
-		<user>jevy1</user>
+		<user></user>
 		<password>continue1</password>
 	</server>
 	
 	<server>
 		<ip>10.188.27.82</ip>
 		<user>jevy2</user>
-		<password>continue2</password>
+		<password></password>
 	</server>
 
 </servers>

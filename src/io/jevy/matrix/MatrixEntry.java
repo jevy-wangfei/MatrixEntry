@@ -1,4 +1,4 @@
-package io.jevy.matrix.startup;
+package io.jevy.matrix;
 
 import io.jevy.matrix.ftp.PowerFTP;
 
@@ -25,7 +25,7 @@ public class MatrixEntry {
 			try {
 				commands = in.readLine().replaceAll("\\s{1,}", " ").split(" ");
 			} catch (IOException e) {
-				e.printStackTrace();
+				Logger.getLogger(PowerFTP.class.getName()).error(e);
 			}
 			if(commands == null){
 				new NullPointerException("The command you put is null.");
@@ -40,6 +40,7 @@ public class MatrixEntry {
 	}
 	
 	void callService(String command){
+		command = command.toUpperCase();
 		if("FTP".equals(command.toUpperCase())){
 			new PowerFTP().createClient();
 		}else if("TELNET".equals(command.toUpperCase())){
@@ -56,11 +57,11 @@ public class MatrixEntry {
 	
 	
 	void createTelnetClient(){
-		
+		//Create related operation in the package of io.jevy.matrix.telnet.
 	}
 	
 	void createSshClient(){
-		
+		//Create related operation in the package of io.jevy.matrix.ssh.
 	}
 	
 	void printHelp(){

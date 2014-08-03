@@ -2,7 +2,6 @@ package io.jevy.matrix.ftp;
 
 import io.jevy.matrix.conf.ConfigReader;
 import io.jevy.matrix.conf.Server;
-import io.jevy.matrix.util.ConsoleProgressBar;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,20 +10,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
-
 public class PowerFTP {
 	
-	private Logger log = Logger.getLogger(PowerFTP.class.getName());
 	private List<Server> serverList = new ConfigReader().getServerList();
-	int totalServers = this.serverList.size();
-	public PowerFTP() {
-	}
-
 	
 	public void createClient(){
-		PowerFTP powerFTP = new PowerFTP();
 		while (true) {
 			BufferedReader in = 
 					new BufferedReader(new InputStreamReader(System.in));
@@ -43,85 +33,50 @@ public class PowerFTP {
 				files.add(commands[i]);
 			}
 			
-			if ("ASCII".equals(command.toUpperCase())) {
-				powerFTP.setCoding(command.toLowerCase());
-			} else if ("BIN".equals(command.toUpperCase())) {
-				powerFTP.setCoding(command.toLowerCase());
-			} else if ("LCD".equals(command.toUpperCase())){
-				powerFTP.setLocalDir(files.get(0));
-			} else if ("CD".equals(command.toUpperCase())){
-				powerFTP.setRemoteDir(files.get(0));
-			} else if ("PUT".equals(command.toUpperCase())){
-				powerFTP.putfiles(files);
-			} else if("RM".equals(command.toUpperCase())||"REMOVE".equals(command.toUpperCase())){
-			} else if("RM".equals(command.toUpperCase())){
-				powerFTP.removeFiles(files);
-			} else if ("HELP".equals(command.toUpperCase())){
-				powerFTP.printHelp();
-			} else if ("QUIT".equals(command.toUpperCase())||"EXIT".equals(command.toUpperCase())||"BYE".equals(command.toUpperCase())){
-				System.exit(0);
-			} else if("PORT".equals(command.toUpperCase())){
-				powerFTP.setPort(files.get(0));
-			} else {
-				powerFTP.printHelp();
-				System.exit(0);
+			switch(FTPOperatorEnum.valueOf(command.toUpperCase())){
+			case CD: 
+				new MutiThreadExecuter().mutiRun(serverList, FTPOperatorEnum.CD, null);
+				break;
+			case LCD: 
+				new MutiThreadExecuter().mutiRun(serverList, FTPOperatorEnum.LCD, null);
+				break;
+			case PUT: 
+				for(Iterator<String> file=files.iterator(); file.hasNext();){
+					new MutiThreadExecuter().mutiRun(serverList, FTPOperatorEnum.PUT, file.next());
+				}
+				break;
+			case GET: 
+				for(Iterator<String> file=files.iterator(); file.hasNext();){
+					new MutiThreadExecuter().mutiRun(serverList, FTPOperatorEnum.GET, file.next());
+				}
+				break;
+			case RM:
+				for(Iterator<String> file=files.iterator(); file.hasNext();){
+					new MutiThreadExecuter().mutiRun(serverList, FTPOperatorEnum.RM, file.next());
+				}
+				break;
+			case PWD:
+				new MutiThreadExecuter().mutiRun(serverList, FTPOperatorEnum.PWD, null);
+				break;
+			case LPWD:
+				new MutiThreadExecuter().mutiRun(serverList, FTPOperatorEnum.LPWD, null);
+				break;
+			case PORT:
+				new MutiThreadExecuter().mutiRun(serverList, FTPOperatorEnum.PORT, null);
+				break;
+			case ASCII:
+				new MutiThreadExecuter().mutiRun(serverList, FTPOperatorEnum.ASCII, null);
+				break;
+			case BIN:
+				new MutiThreadExecuter().mutiRun(serverList, FTPOperatorEnum.BIN, null);
+				break;
+			case HELP:
+				printHelp();
+				break;
 			}
 		}
 	}
 	
-	public void setCoding(String coding){
-		for(Iterator<Server> it=serverList.iterator(); it.hasNext();){
-			((Server)it.next()).setCoding(coding);
-			log.info("Set Transfer Code to " + coding);
-		}
-		
-	}
-	public void setPort(String port){
-		for(Iterator<Server> it=serverList.iterator(); it.hasNext();){
-			((Server)it.next()).setPort(port);
-			log.info("Set Transfer Port to " + port);
-		}
-	}
-	public void setLocalDir(String localDir){
-		for(Iterator<Server> it=serverList.iterator(); it.hasNext();){
-			((Server)it.next()).setLocalDir(localDir);
-			log.info("Set Local Directory to " + localDir);
-		}
-	}
-	public void setRemoteDir(String remoteDir){
-		for(Iterator<Server> it=serverList.iterator(); it.hasNext();){
-			((Server)it.next()).setRemoteDir(remoteDir);
-			log.info("Set Remote Directory to " + remoteDir);
-		}
-	}
-	public void putfiles(List<String> fileList){
-		for(Iterator<String> files=fileList.iterator(); files.hasNext();){
-			String file = (String)files.next();
-			log.info("Uploading file " + file);
-			int successNumber = 0;
-			for(Iterator<Server> servers=this.serverList.iterator(); servers.hasNext();){
-				PutFile putfile = new PutFile((Server)servers.next(), file);
-				new Thread(putfile).run();
-				if(putfile.flag)
-					successNumber++;
-				new ConsoleProgressBar(successNumber, totalServers, 50);
-			}
-		}
-	}
-	public void removeFiles(List<String> fileList){
-		for(Iterator<String> files=fileList.iterator(); files.hasNext();){
-			String file = (String)files.next();
-			log.info("Uploading file " + file);
-			int successNumber = 0;
-			for(Iterator<Server> servers=this.serverList.iterator(); servers.hasNext();){
-				RemoveFile removeFile = new RemoveFile((Server)servers.next(), file);
-				new Thread(removeFile).run();
-				if(removeFile.flag)
-					successNumber++;
-				new ConsoleProgressBar(successNumber, totalServers, 50);
-			}
-		}
-	}
 	public void printHelp(){
 		System.out.println("Usage: \n"
 				+ "     put file [file2 file3 ...]  \n"
@@ -136,6 +91,8 @@ public class PowerFTP {
 				+ "     cd directory (Should be full directory)\n"
 				+ "        --change remote directory.\n"
 				+ "          Example: cd /home/hadoop\n"
+				+ "     pwd (Show current remote directory)\n"
+				+ "		lpwd (Show current local directory)\n"
 				+ "     assii\n"
 				+ "        --set transfer coding to assii.\n"
 				+ "     bin\n"
