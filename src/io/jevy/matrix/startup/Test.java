@@ -1,7 +1,5 @@
 package io.jevy.matrix.startup;
 
-import java.io.File;
-import java.util.Scanner;
 
 public abstract class Test {
 
