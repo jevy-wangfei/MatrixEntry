@@ -6,66 +6,95 @@ import java.io.InputStreamReader;
 
 import org.apache.log4j.Logger;
 
-import wf.jevy.matrix.ftp.PowerFTP;
+import wf.jevy.matrix.ftp.FTP;
 
 public class MatrixEntry {
-	
-	private Logger log = Logger.getLogger(PowerFTP.class.getName());
-	
-	public MatrixEntry() {
-		// TODO Auto-generated constructor stub
-	}
-	
+
+	boolean run = true;
+
 	public static void main(String[] args) {
-		
-		if(args == null){
-			BufferedReader in = 
-					new BufferedReader(new InputStreamReader(System.in));
+
+		if (args.length == 0) {
+			new MatrixEntry().getInput();
+
+		} else {
+			new MatrixEntry().callService(args[0].trim());
+		}
+
+	}
+
+	void getInput() {
+		while (run) {
+			System.out.print("Matrix > ");
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					System.in));
 			String[] commands = null;
 			try {
 				commands = in.readLine().replaceAll("\\s{1,}", " ").split(" ");
 			} catch (IOException e) {
-				Logger.getLogger(PowerFTP.class.getName()).error(e);
+				Logger.getLogger(FTP.class.getName()).error(e);
 			}
-			if(commands == null){
-				new NullPointerException("The command you put is null.");
+			if (commands.length == 0) {
+				System.out.println("The command you put is null.");
+			} else {
+				callService(commands[0].trim());
 			}
-			new MatrixEntry().callService(commands[0]);
-			
-		}else{
-			new MatrixEntry().callService(args[0]);
 		}
-		
-		
+		System.out.println("Matrix Engry is exited.");
 	}
-	
-	void callService(String command){
-		command = command.toUpperCase();
-		if("FTP".equals(command.toUpperCase())){
-			new PowerFTP().createClient();
-		}else if("TELNET".equals(command.toUpperCase())){
-			createTelnetClient();
-		}else if("SSH".equals(command.toUpperCase())){
-			createSshClient();
-		}else if("HELP".equals(command.toUpperCase()) || "?".equals(command.toUpperCase())){
-			printHelp();
-		}else{
-			log.error("Ellegal command input.");
-			printHelp();
+
+	void callService(String command) {
+		if (command.length() > 0) {
+
+			command = command.trim().toUpperCase();
+			ToolsEnum tool = null;
+			try {
+				tool = ToolsEnum.valueOf(command);
+			} catch (IllegalArgumentException e) {
+				System.out.println("  Illegal Argument input: " + command);
+			}
+
+			if (tool != null) {
+				switch (tool) {
+				case FTP:
+					new FTP().createClient();
+					break;
+				case TELNET:
+					break;
+				case SFTP:
+					break;
+				case SSH:
+					break;
+				case HELP:
+					printHelp();
+					break;
+				case QUIT:
+					this.run = false;
+					break;
+				case EXIT:
+					this.run = false;
+					break;
+				case BYE:
+					this.run = false;
+					break;
+				default:
+					System.out.println("  Individual input" + command);
+					break;
+				}
+			}
 		}
 	}
-	
-	
-	void createTelnetClient(){
-		//Create related operation in the package of io.jevy.matrix.telnet.
+
+	void createTelnetClient() {
+		// Create related operation in the package of io.jevy.matrix.telnet.
 	}
-	
-	void createSshClient(){
-		//Create related operation in the package of io.jevy.matrix.ssh.
+
+	void createSshClient() {
+		// Create related operation in the package of io.jevy.matrix.ssh.
 	}
-	
-	void printHelp(){
-		
+
+	void printHelp() {
+
 	}
 
 }
