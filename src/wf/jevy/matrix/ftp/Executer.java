@@ -1,4 +1,4 @@
-package io.jevy.matrix.ftp;
+package wf.jevy.matrix.ftp;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,7 +8,7 @@ import java.io.IOException;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.log4j.Logger;
 
-import io.jevy.matrix.conf.Server;
+import wf.jevy.matrix.conf.Server;
 
 public class Executer implements Runnable{
 	private Server server;

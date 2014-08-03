@@ -1,4 +1,4 @@
-package io.jevy.matrix.util;
+package wf.jevy.matrix.util;
 
 /**
  * 控制台字符型进度条。

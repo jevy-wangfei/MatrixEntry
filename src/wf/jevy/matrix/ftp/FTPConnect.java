@@ -1,12 +1,12 @@
-package io.jevy.matrix.ftp;
-
-import io.jevy.matrix.conf.Server;
+package wf.jevy.matrix.ftp;
 
 import java.io.IOException;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.apache.log4j.Logger;
+
+import wf.jevy.matrix.conf.Server;
 
 public class FTPConnect {
 	private static Logger log = Logger.getLogger(FTPConnect.class.getName());

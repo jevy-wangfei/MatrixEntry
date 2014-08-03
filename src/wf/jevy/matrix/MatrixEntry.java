@@ -1,12 +1,12 @@
-package io.jevy.matrix;
-
-import io.jevy.matrix.ftp.PowerFTP;
+package wf.jevy.matrix;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.apache.log4j.Logger;
+
+import wf.jevy.matrix.ftp.PowerFTP;
 
 public class MatrixEntry {
 	
