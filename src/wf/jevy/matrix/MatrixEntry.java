@@ -13,14 +13,11 @@ public class MatrixEntry {
 	boolean run = true;
 
 	public static void main(String[] args) {
-
 		if (args.length == 0) {
 			new MatrixEntry().getInput();
-
 		} else {
 			new MatrixEntry().callService(args[0].trim());
 		}
-
 	}
 
 	void getInput() {

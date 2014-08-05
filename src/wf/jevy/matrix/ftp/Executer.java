@@ -23,11 +23,9 @@ public class Executer implements Runnable{
 		oper = operator;
 	}
 	
-
 	public void execute(){
 		FTPConnect conn = new FTPConnect();
 		FTPClient cli = conn.getConnect(this.server);
-		
 		try {
 			//cli.setFileTransferMode(mode)
 			switch(oper){
@@ -73,7 +71,6 @@ public class Executer implements Runnable{
 			}
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			log.error("PutFile.put(): " + e);
 		}
 		conn.closeConnect();
@@ -82,9 +79,6 @@ public class Executer implements Runnable{
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		this.execute();
-
 	}
-
 }

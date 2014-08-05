@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import wf.jevy.matrix.MatrixEntry;
-import wf.jevy.matrix.ToolsEnum;
 import wf.jevy.matrix.conf.ConfigReader;
 import wf.jevy.matrix.conf.Server;
 
@@ -19,7 +17,7 @@ public class FTP {
 	String command = null;
 	List<String> files = new ArrayList<String>();
 	boolean run = true;
-	
+
 	public void createClient() {
 		while (run) {
 			System.out.print("Matrix FTP >> ");
@@ -124,9 +122,9 @@ public class FTP {
 				.println("Usage: \n"
 						+ "     put file [file2 file3 ...]  \n"
 						+ "        --put the file(s) of current directory to the current remote directory\n"
-						+ "        --use lcd command to change local directory."
-						+ "        --use cd command to change remote directory."
-						+ "		rm file [file2 file3 ...]\n"
+						+ "		get file [file2 file3 ...]\n"
+						+ "        -- get the file from remote directory to local directory. \n "
+						+ "     rm file [file2 file3 ...]\n"
 						+ "		   --remove remote server file(s) \n"
 						+ "     lcd directory (Shoule be full directory)\n"
 						+ "        --change local directory. \n"
@@ -141,7 +139,7 @@ public class FTP {
 						+ "     bin\n"
 						+ "        --set transfer coding to bin\n"
 						+ "     port number\n"
-						+ "        --set file transfer port to number, default port is 21.");
+						+ "        --set file transfer port to number, default port is 21.\n");
 	}
 
 }
